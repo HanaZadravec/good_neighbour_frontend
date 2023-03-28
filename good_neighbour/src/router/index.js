@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import pocetna from '@/views/pocetna.vue'
 import login from '@/views/login.vue'
+import signup from '@/views/signup.vue'
 const routes = [
   {
     path:'/',
@@ -11,6 +12,11 @@ const routes = [
     path:'/login',
     name:'login',
     component:login
+  },
+  {
+    path:'/signup',
+    name:'signup',
+    component:signup
   }
 ]
 
