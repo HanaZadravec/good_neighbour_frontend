@@ -1,4 +1,4 @@
-# good_neighbour
+# app
 
 ## Project setup
 ```
