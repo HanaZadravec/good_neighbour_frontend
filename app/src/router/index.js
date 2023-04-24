@@ -6,6 +6,10 @@ import signup from '@/views/signup.vue'
 import home from '@/views/home.vue'
 import aboutUs from '@/views/aboutUs.vue'
 import contact from '@/views/contact.vue'
+import crimes from '@/views/crimes.vue'
+import profile from '@/views/myProfile.vue'
+import chat from '@/views/chat.vue'
+import notifications from '@/views/notifications.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -41,6 +45,26 @@ const router = new VueRouter({
       path: '/contact',
       name: 'contact',
       component: contact
+    },
+    {
+      path: '/crimes',
+      name: 'crimes',
+      component: crimes
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: profile
+    },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: chat
+    },
+    {
+      path: '/notifications',
+      name: 'notifications',
+      component: notifications
     },
   ]
 })

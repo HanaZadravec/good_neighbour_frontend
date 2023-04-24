@@ -6,13 +6,13 @@
         <h5><a href="/home">Home</a></h5>
       </div>
       <div class="col-md-3 col-sm-6">
-        <h5><a href="#">Contact</a></h5>
+        <h5><a href="/contact">Contact</a></h5>
       </div>
       <div class="col-md-3 col-sm-6">
-        <h5><a href="#">Crimes</a></h5>
+        <h5><a href="/crimes">Crimes</a></h5>
       </div>
       <div class="col-md-3 col-sm-6">
-        <h5><a href="#">About Us</a></h5>
+        <h5><a href="/aboutus">About Us</a></h5>
       </div>
     </div>
   </div>
