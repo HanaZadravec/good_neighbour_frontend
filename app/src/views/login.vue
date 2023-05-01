@@ -2,10 +2,10 @@
     <div class="slika">
       <div class="container">
         <div class="row">
-          <div class="col-lg-12" style="margin-top:30px;">
-            <h1 style="font-family: 'Norwester', sans-serif;color:white;font-size:120px;margin-top:30px;">LOG IN</h1>
+          <div class="col-lg-12">
+            <h1>LOG IN</h1>
           </div>
-          <div class="col-lg-12" style="margin-top:50px;">
+          <div class="col-lg-12" style="margin-top:20px;">
             <input type="text" placeholder="YOUR EMAIL..." style="display:block; margin-bottom: 25px;" required/>
             <div class="field" style="display: flex;">
               <div class="control is-expanded" style="flex: 1;">
@@ -17,7 +17,7 @@
                 </button>
               </div>
             </div>
-            <button class="button" style="display:block;margin-top:20px;">Log in</button>
+            <button class="button" style="display:block;margin-top:35px;">Log in</button>
           </div>
         </div>
       </div>
@@ -49,6 +49,12 @@
   </script>
   
   <style scoped>
+  h1{
+    font-family: 'Norwester', sans-serif;
+    color:white;
+    font-size:120px;
+    margin-top:15px;
+  }
   input {
     background-color: transparent;
     border: none;
@@ -83,4 +89,10 @@
     background-color: #f6f7f7;
     color: #98938a;
   }
+   @media only screen and (max-width: 992px) {
+  h1{
+    font-size: 80px;
+    margin-top:15px;
+  }
+}
   </style>

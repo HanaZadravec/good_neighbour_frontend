@@ -3,15 +3,39 @@
      <appNav />
      <div class="container mt-2" >
       <div class="row">
-    <div class="col-md-12" style="margin-bottom:50px;">
+    <div class="col-md-12">
       <div class="welcome-message">
   <h1>Welcome to Good Neighbourgh!</h1>
   <p>The app that connects you with your community to help keep your neighbourhood safe.</p>
   <p>Are you worried about crime in your area? Good Neighbourgh is here to help.</p>
 </div>
+<div class="row justify-content-center">
+<div class="col-md-6">
+          <h1 style="margin-top:50px;">Report a crime</h1>
+          <form class="card">
+            <div class="card-body">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter crime title">
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter crime address">
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter crime city">
+              </div>
+              <div class="form-group">
+                <textarea class="form-control" placeholder="Enter crime description" rows="5"></textarea>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-danger">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
     </div>
   </div>
-    <div class="row justify-content-center">
+  </div>
+    <div class="row justify-content-center" style="margin-top:70px;">
       <div class="col-md-6" >
         <form class="card">
           <div class="card-body">
@@ -157,6 +181,13 @@ export default {
   color: red;
   font-size: 2.5rem;
   margin-bottom: 10px;
+  font-family: 'Norwester', sans-serif;
+}
+
+h1{
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
   font-family: 'Norwester', sans-serif;
 }
 

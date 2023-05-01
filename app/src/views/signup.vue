@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 style="font-family: 'Norwester', sans-serif;color:white;font-size:120px;margin-top:30px;margin-bottom:30px;">SIGN UP</h1>
+                    <h1>SIGN UP</h1>
                 </div>
                   <div class="col-lg-6">
               <input type="text" name="firstName" placeholder="YOUR FIRST NAME..." required>
@@ -83,6 +83,13 @@
     display:block;
     margin-bottom:25px;
   }
+  h1{
+    font-family: 'Norwester', sans-serif;
+    color:white;
+    font-size:120px;
+    margin-top:30px;
+    margin-bottom:30px;
+  }
   .slika {
       background-image: url("@/assets/pocetna.jpg");
       background-size: cover;
@@ -106,4 +113,15 @@
       background-color: #f6f7f7;
       color: #98938a;
     }
+    @media only screen and (max-width: 992px) {
+  .slika {
+    height: 140vh;
+  }
+  h1{
+    font-size: 80px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+}
+
     </style>

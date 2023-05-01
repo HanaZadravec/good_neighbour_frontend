@@ -1,39 +1,37 @@
 <template>
-<div class="boja">
+  <div class="boja">
     <appNav />
-  <section class="contact">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
             <h1>Contact Us</h1>
-        </div>
-        <div class="col-md-6" style="margin-top:75px;">
-          <p style="font-size:23px;">Phone: 555-333</p>
-          <p style="font-size:23px;">E-mail: goodneighbur@gmail.com</p>
-          <p style="font-size:23px;">Adress: Ul. Petra Preradovica 9, Pula</p>
-        </div>
-        <div class="col-md-6" style="margin-bottom:50px;">
-          <h2 style="text-align:center;margin-bottom:20px;">Get in Touch</h2>
-          <form>
-            <div class="form-group">
-              <label for="name">Name and surname:</label>
-              <input type="text" id="name" v-model="name" class="form-control input-round" placeholder="First and last name" required>
-            </div>
-            <div class="form-group">
-              <label for="email">Email:</label>
-              <input type="email" id="email" v-model="email" class="form-control input-round" placeholder="Your email address" required>
-            </div>
-            <div class="form-group">
-              <label for="message">Message:</label>
-              <textarea id="message" v-model="message" class="form-control input-round" placeholder="message" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary btn-round">Send</button>
-          </form>
+          </div>
+          <div class="contact col-md-6">
+            <p style="font-size:23px;">Phone: 555-333</p>
+            <p style="font-size:23px;">E-mail: goodneighbur@gmail.com</p>
+            <p style="font-size:23px;">Adress: Ul. Petra Preradovica 9, Pula</p>
+          </div>
+          <div class="col-md-6" style="margin-bottom:50px;">
+            <h2 style="text-align:center;margin-bottom:20px;">Get in Touch</h2>
+            <form>
+              <div class="form-group">
+                <label for="name">Name and surname:</label>
+                <input type="text" id="name" v-model="name" class="form-control input-round" placeholder="First and last name" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" v-model="email" class="form-control input-round" placeholder="Your email address" required>
+              </div>
+              <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" v-model="message" class="form-control input-round" placeholder="message" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-round">Send</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-  <appFooter />
+    <appFooter />
   </div>
 </template>
 
@@ -94,6 +92,14 @@ form {
   font-family: 'Norwester', sans-serif;
   text-align: center;
 }
-
+ .contact {
+  margin-top:75px;
+ }
+@media only screen and (max-width: 768px) {
+  .contact {
+    margin-top: 10px;
+    margin-bottom:20px;
+  }
+}
 
 </style>

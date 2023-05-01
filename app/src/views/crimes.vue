@@ -1,22 +1,28 @@
 <template>
-    <div class="boja">
-        <appNav />
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Crimes</h1>
-                </div>
-                <div class="col-md-12" style="margin-bottom:30px;">
-                 <label for="location" style="font-size:20px;">Location:</label>
-                 <input type="text" id="location" v-model="locationFilter" class="input-round"/>
-                 <label for="date" style="font-size:20px;">Date:</label>
-                 <input type="date" id="date" v-model="dateFilter" class="input-round"/>
-                 <button @click="applyFilters" class="btn btn-round">Filter</button>
-                </div>
-            </div>
+  <div class="boja">
+    <appNav />
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Crimes</h1>
         </div>
-        <appFooter />
+        <div class="col-md-12 filter-inputs" style="margin-bottom:30px;">
+          <div>
+            <label for="location" style="font-size:20px;">Location:</label>
+            <input type="text" id="location" v-model="locationFilter" class="input-round"/>
+          </div>
+          <div>
+            <label for="date" style="font-size:20px;">Date:</label>
+            <input type="date" id="date" v-model="dateFilter" class="input-round"/>
+          </div>
+          <div>
+            <button @click="applyFilters" class="btn btn-round">Filter</button>
+          </div>
+        </div>
+      </div>
     </div>
+    <appFooter />
+  </div>
 </template>
 
 <script>
