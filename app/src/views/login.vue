@@ -5,11 +5,12 @@
           <div class="col-lg-12">
             <h1>LOG IN</h1>
           </div>
+          <form @submit.prevent="loginData">
           <div class="col-lg-12" style="margin-top:20px;">
-            <input type="text" placeholder="YOUR EMAIL..." style="display:block; margin-bottom: 25px;" required/>
+            <input type="text" v-model="user.email" placeholder="YOUR EMAIL..." style="display:block; margin-bottom: 25px;" required autocomplete="off"/>
             <div class="field" style="display: flex;">
               <div class="control is-expanded" style="flex: 1;">
-                <input :type="showPassword ? 'text' : 'password'" class="input" placeholder="YOUR PASSWORD..." v-model="password" required>
+                <input :type="showPassword ? 'text' : 'password'" class="input" placeholder="YOUR PASSWORD..." v-model="user.password" required autocomplete="off">
                 <button class="button" @click="toggleShow" style="border: none; background-color: #060706;">
                   <span class="icon is-small">
                     <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
@@ -17,8 +18,9 @@
                 </button>
               </div>
             </div>
-            <button class="button" style="display:block;margin-top:35px;">Log in</button>
+            <button class="submit button" style="display:block;margin-top:35px;">Log in</button>
           </div>
+          </form>
         </div>
       </div>
     </div>
@@ -27,12 +29,20 @@
   
   
   <script>
+  import Vue from 'vue';
+  import axios from 'axios';
+
+  Vue.prototype.$http = axios;
   export default {
     name: 'login',
     data() {
       return {
         showPassword: false,
-        password: null
+        result:{},
+        user:{
+          email:'',
+          password:''
+        }
       };
     },
     computed: {
@@ -43,7 +53,22 @@
     methods: {
       toggleShow() {
         this.showPassword = !this.showPassword;
-      }
+      },
+      loginData() {
+      axios.post('http://localhost:5000/user/create', this.user).then(({ data }) => {
+        console.log(data.status);
+        try{
+          if(data.status===true){
+            alert("Login successfully");
+            this.$router.push({name: 'home'})
+          }else{
+            alert("Login failed");
+          }
+        }catch(err){
+            alert("Error,please try again.");
+        }
+      });
+    }
     }
   };
   </script>
