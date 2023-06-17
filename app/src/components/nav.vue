@@ -24,6 +24,9 @@
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item">
+          <button class="logout-button" @click.prevent="logOut">LOGOUT</button>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/chat"><i class="fas fa-comments"></i></a>
         </li>
         <li class="nav-item">
@@ -42,10 +45,13 @@ export default {
       return this.$route.name;
     },
   },
+  methods: {logOut(){
+    localStorage.clear();
+    this.$router.push("/login");
+  }}
 };
 </script>
 
-</template>
 
 
 <style scoped>
@@ -70,5 +76,17 @@ export default {
     
 .navbar-nav .nav-link:hover:after {
     transform: scaleX(1);
+}.logout-button {
+  padding: 5px 10px;
+  font-family: 'Norwester', sans-serif;
+  background-color: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.logout-button:hover {
+  color: red;
 }
 </style>

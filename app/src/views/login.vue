@@ -5,12 +5,17 @@
           <div class="col-lg-12">
             <h1>LOG IN</h1>
           </div>
-          <form @submit.prevent="loginData">
+          <div class="col-lg-12" style="margin-top: 20px;">
+          <p>
+            Don't have an account? <router-link style="text-decoration: none;color:gray;" to="/signup">click here</router-link>
+          </p>
+          </div>
+          <form @submit.prevent="loginUser">
           <div class="col-lg-12" style="margin-top:20px;">
-            <input type="text" v-model="user.email" placeholder="YOUR EMAIL..." style="display:block; margin-bottom: 25px;" required autocomplete="off"/>
+            <input type="text" v-model="email" placeholder="YOUR EMAIL..." style="display:block; margin-bottom: 25px;" required autocomplete="off"/>
             <div class="field" style="display: flex;">
               <div class="control is-expanded" style="flex: 1;">
-                <input :type="showPassword ? 'text' : 'password'" class="input" placeholder="YOUR PASSWORD..." v-model="user.password" required autocomplete="off">
+                <input :type="showPassword ? 'text' : 'password'" class="input" placeholder="YOUR PASSWORD..." v-model="password" required autocomplete="off">
                 <button class="button" @click="toggleShow" style="border: none; background-color: #060706;">
                   <span class="icon is-small">
                     <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
@@ -26,23 +31,15 @@
     </div>
   </template>
   
-  
-  
   <script>
-  import Vue from 'vue';
-  import axios from 'axios';
-
-  Vue.prototype.$http = axios;
+  import axios from "axios";
   export default {
     name: 'login',
     data() {
       return {
         showPassword: false,
-        result:{},
-        user:{
-          email:'',
-          password:''
-        }
+        email:'',
+        password:''
       };
     },
     computed: {
@@ -54,21 +51,21 @@
       toggleShow() {
         this.showPassword = !this.showPassword;
       },
-      loginData() {
-      axios.post('http://localhost:5000/user/create', this.user).then(({ data }) => {
-        console.log(data.status);
-        try{
-          if(data.status===true){
-            alert("Login successfully");
-            this.$router.push({name: 'home'})
-          }else{
-            alert("Login failed");
-          }
-        }catch(err){
-            alert("Error,please try again.");
+      loginUser() {
+      let user={
+        email:this.email,
+        password:this.password
+      }
+      axios.post("http://localhost:4000/login", user).then(res =>{
+        if(res.status===200){
+          localStorage.setItem('token', res.data.token);
+          this.$router.push("/home");
         }
-      });
-    }
+        },
+        err=>{
+          alert(err.response.data.error);
+        });
+      }
     }
   };
   </script>
@@ -79,6 +76,10 @@
     color:white;
     font-size:120px;
     margin-top:15px;
+  }
+  p{
+    font-family: 'Norwester', sans-serif;
+    color:white;
   }
   input {
     background-color: transparent;

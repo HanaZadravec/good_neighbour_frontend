@@ -19,54 +19,82 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'pocetna',
-      component: pocetna
+      component: pocetna,meta: { requiresAuth: false,requiresGuest:true }
     },
     {
       path: '/login',
       name: 'login',
-      component: login
+      component: login,meta: { requiresAuth: false,requiresGuest:true }
     },
     {
       path: '/signup',
       name: 'signup',
-      component: signup
+      component: signup,meta: { requiresAuth: false,requiresGuest:true }
     },
     {
       path: '/home',
       name: 'home',
-      component: home
+      component: home,meta: { requiresAuth: true }
     },
     {
       path: '/aboutus',
       name: 'aboutUs',
-      component: aboutUs
+      component: aboutUs,meta: { requiresAuth: true }
     },
     {
       path: '/contact',
       name: 'contact',
-      component: contact
+      component: contact,meta: { requiresAuth: true }
     },
     {
       path: '/crimes',
       name: 'crimes',
-      component: crimes
+      component: crimes,meta: { requiresAuth: true }
     },
     {
       path: '/profile',
       name: 'profile',
-      component: profile
+      component: profile,meta: { requiresAuth: true }
     },
     {
       path: '/chat',
       name: 'chat',
-      component: chat
+      component: chat,meta: { requiresAuth: true }
     },
     {
       path: '/notifications',
       name: 'notifications',
-      component: notifications
+      component: notifications,meta: { requiresAuth: true }
     },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token');
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    // Provjerite je li korisnik autoriziran
+    if (!token) {
+      // Ako nije autoriziran, preusmjerite ga na login stranicu
+      next('/login');
+    } else {
+      
+        next();
+      }
+  } else if (to.matched.some((record) => record.meta.requiresGuest)) {
+    // Provjerite je li korisnik gost i pokušava pristupiti rutama koje zahtijevaju gost status
+    if (token) {
+      // Ako je korisnik gost i ima token, preusmjerite ga na željenu rutu
+      next('/home');
+    } else {
+      // Ako je korisnik gost i nema token, nastavite s prikazom rute
+      next();
+    }
+  } else {
+    // Nije potrebna autorizacija za ovu rutu, nastavite s prikazom
+    next();
+  }
+});
+
 
 export default router

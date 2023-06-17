@@ -5,15 +5,20 @@
         <div class="col-lg-12">
           <h1>SIGN UP</h1>
         </div>
-        <form @submit.prevent="saveData">
-          <div class="col-lg-6">
-            <input type="text" v-model="user.firstname" name="firstName" placeholder="YOUR FIRST NAME..." required autocomplete="off">
+        <form @submit.prevent="registerUser">
+          <div class="col-lg-12" style="margin-top: 20px;">
+          <p>
+            Have an account? <router-link style="text-decoration: none;color:gray;" to="/login">click here</router-link>
+          </p>
           </div>
           <div class="col-lg-6">
-            <input type="text" v-model="user.lastname" name="lastName" placeholder="YOUR LAST NAME..." required autocomplete="off">
+            <input type="text" v-model="firstname" name="firstName" placeholder="YOUR FIRST NAME..." required autocomplete="off">
+          </div>
+          <div class="col-lg-6">
+            <input type="text" v-model="lastname" name="lastName" placeholder="YOUR LAST NAME..." required autocomplete="off">
           </div>
           <div class="col-lg-6 d-flex">
-            <input :type="showPassword ? 'text' : 'password'" name="pass" class="input" placeholder="ENTER PASSWORD..." v-model="user.password" required autocomplete="off">
+            <input :type="showPassword ? 'text' : 'password'" name="pass" class="input" placeholder="ENTER PASSWORD..." v-model="password" required autocomplete="off">
             <button class="button" @click="toggleShowPassword" style="border: none; background-color: #060706;">
               <span class="icon is-small">
                 <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
@@ -21,7 +26,7 @@
             </button>
           </div>
           <div class="col-lg-6 d-flex">
-            <input :type="showConfirmPassword ? 'text' : 'password'" class="input" name="confirmPass" placeholder="CONFIRM PASSWORD..." v-model="user.confirmPassword" required autocomplete="off">
+            <input :type="showConfirmPassword ? 'text' : 'password'" class="input" name="confirmPass" placeholder="CONFIRM PASSWORD..." v-model="confirmPass" required autocomplete="off">
             <button class="button" @click="toggleShowConfirmPassword" style="border: none; background-color: #060706;">
               <span class="icon is-small">
                 <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
@@ -29,13 +34,13 @@
             </button>
           </div>
           <div class="col-lg-6">
-            <input v-model="user.email" type="email" name="email" placeholder="YOUR EMAIL..." required autocomplete="off">
+            <input v-model="email" type="email" name="email" placeholder="YOUR EMAIL..." required autocomplete="off">
           </div>
           <div class="col-lg-6">
-            <input v-model="user.address" type="text" name="address" placeholder="YOUR ADDRESS..." required autocomplete="off">
+            <input v-model="address" type="text" name="address" placeholder="THE CITY WHERE YOU LIVE..." required autocomplete="off">
           </div>
           <div class="col-lg-9 text-center">
-            <button class="submit button" style="margin-top:80px;">Sign up</button>
+            <button class="submit button" style="margin-top:20px;">Sign up</button>
           </div>
         </form>
       </div>
@@ -44,25 +49,19 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import axios from 'axios';
-
-Vue.prototype.$http = axios;
+import axios from "axios";
 export default {
   name: 'signup',
   data() {
     return {
       showPassword: false,
       showConfirmPassword: false,
-      result: {},
-      user: {
-        id: '',
+      confirmPass:'',
         firstname: '',
         lastname: '',
-        email: '',
         password: '',
+        email: '',
         address: ''
-      }
     };
   },
   computed: {
@@ -80,19 +79,27 @@ export default {
     toggleShowConfirmPassword() {
       this.showConfirmPassword = !this.showConfirmPassword;
     },
-    saveData() {
-      if (this.user.password !== this.user.confirmPassword) {
-        alert('Passwords do not match!');
-        return;
+    registerUser() {
+      let newUser ={
+        firstname:this.firstname,
+        lastname:this.lastname,
+        password:this.password,
+        email:this.email,
+        address:this.address
       }
-
-      axios.post('http://localhost:5000/user/create', this.user).then(({ data }) => {
-        alert('Saved');
+      console.log(newUser);
+      axios.post("http://localhost:4000/register", newUser).then(res =>{
+        console.log(res);
+        alert("Registered successfully!");
+        this.$router.push("/login");
+      },err=>{
+        alert(err.response.data.error);
       });
-    }
+  }
   }
 };
 </script>
+
 
 <style scoped>
 input {
@@ -122,7 +129,10 @@ h1 {
   background-position: center;
   height: 100vh;
 }
-
+p{
+    font-family: 'Norwester', sans-serif;
+    color:white;
+  }
 .button {
   background-color: #111010;
   border: 2px solid #98938a;

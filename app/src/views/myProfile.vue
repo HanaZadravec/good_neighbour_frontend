@@ -38,12 +38,15 @@
 <script>
 import appFooter from '@/components/footer.vue'
 import appNav from '@/components/nav.vue'
-
+import axios from 'axios';
 export default{
     name:"profile",
     components:{
         appFooter,
         appNav
+    },
+    mounted(){
+        
     }
 }
 </script>
