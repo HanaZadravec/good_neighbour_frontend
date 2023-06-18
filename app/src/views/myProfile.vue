@@ -9,20 +9,20 @@
                 <div class="col-md-12" style="margin-top:20px;margin-bottom:40px;">
                     <div class="row">
                         <div class="col-md-12 col-sm-4" style="margin-bottom:20px;">
-                            <i class="fas fa-user" style="color:red; font-size:24px;"></i>
-                            <span style="margin-left:10px;font-size:20px;">username</span>
+                            <i class="fas fa-address-card" style="color:red; font-size:24px;"></i>
+                            <span style="margin-left:10px;font-size:20px;">FIRST NAME: {{firstname}}</span>
                         </div>
                         <div class="col-md-12 col-sm-4" style="margin-bottom:20px;">
                             <i class="fas fa-address-card" style="color:red; font-size:24px;"></i>
-                            <span style="margin-left:10px;font-size:20px;">NAME</span>
+                            <span style="margin-left:10px;font-size:20px;">LAST NAME: {{lastname}}</span>
+                        </div>
+                        <div class="col-md-12 col-sm-4" style="margin-bottom:20px;">
+                            <i class="fas fa-envelope" style="color:red; font-size:24px;"></i>
+                            <span style="margin-left:10px;font-size:20px;">EMAIL: {{email}}</span>
                         </div>
                         <div class="col-md-12 col-sm-4" style="margin-bottom:20px;">
                             <i class="fas fa-home" style="color:red; font-size:24px;"></i>
                             <span style="margin-left:10px;font-size:20px;">address</span>
-                        </div>
-                        <div class="col-md-12 col-sm-4" style="margin-bottom:20px;">
-                            <i class="fas fa-envelope" style="color:red; font-size:24px;"></i>
-                            <span style="margin-left:10px;font-size:20px;">email</span>
                         </div>
                     </div>
                 </div>
@@ -41,12 +41,23 @@ import appNav from '@/components/nav.vue'
 import axios from 'axios';
 export default{
     name:"profile",
+    data(){
+        return{
+            firstname:'',
+            lastname:'',
+            email:''
+        }
+    },
     components:{
         appFooter,
         appNav
     },
     mounted(){
-        
+        axios.get("http://localhost:4000/user", {headers:{token: localStorage.getItem('token')}}).then(res =>{
+            this.firstname=res.data.user.firstname;
+            this.lastname=res.data.user.lastname;
+            this.email=res.data.user.email;
+        });
     }
 }
 </script>

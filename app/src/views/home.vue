@@ -12,19 +12,19 @@
 <div class="row justify-content-center">
 <div class="col-md-6">
           <h1 style="margin-top:50px;">Report a crime</h1>
-          <form class="card">
+          <form @submit.prevent="reportCrime" class="card">
             <div class="card-body">
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="Enter crime title">
+                <input type="text" class="form-control" v-model="crimeTitle" placeholder="Enter crime title">
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="Enter crime address">
+                <input type="text" class="form-control" v-model="crimeAddress" placeholder="Enter crime address">
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="Enter crime city">
+                <input type="text" class="form-control" v-model="crimeCity" placeholder="Enter crime city">
               </div>
               <div class="form-group">
-                <textarea class="form-control" placeholder="Enter crime description" rows="5"></textarea>
+                <textarea class="form-control" v-model="crimeDesc" placeholder="Enter crime description" rows="5"></textarea>
               </div>
               <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-danger">Submit</button>
@@ -61,6 +61,14 @@
   <div class="row">
     <div class="col-md-12">
       <h1 style="font-family: 'Norwester', sans-serif;color:white;margin-top:30px;margin-bottom:30px;">RECENT CRIMES</h1>
+    <div class="card" style="margin:20px;" v-for="crime in crimes" :key="crime._id">
+    <div class="card-body">
+      <h5 class="card-title">Reported by: {{ crime.reporterEmail }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">Title: {{ crime.crimeTitle }}</h6>
+      <p class="card-text">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
+      <p class="card-text">Description: {{ crime.crimeDesc }}</p>
+    </div>
+    </div>
     </div>
   </div>
   </div>
@@ -80,9 +88,15 @@ export default {
   },
   data() {
     return {
+      crimeTitle:'',
+      crimeAddress:'',
+      crimeCity:'',
+      crimeDesc:'',
       address: "",
       error: "",
       loading:false,
+      email:'',
+      crimes: []
     };
   },
   mounted() {
@@ -98,8 +112,57 @@ export default {
     window.initMap = this.initMap;
     document.head.appendChild(script);
   }
+  
+   axios.get("http://localhost:4000/user", {headers:{token: localStorage.getItem('token')}}).then(res =>{
+     this.email=res.data.user.email;
+    });
+    axios.get("http://localhost:4000/crimes")
+    .then(response => {
+      // Sortiranje zločina prema crimeDate polju
+      response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
+      // Ograničavanje na prvih 5 najnovijih zločina
+      this.crimes = response.data.slice(0, 5);
+    })
+    .catch(error => {
+      console.error("Failed to fetch crimes:", error);
+    });
+    
 },
   methods: {
+    reportCrime(){
+      const currentDate = new Date();
+      let newCrime ={
+        reporterEmail:this.email,
+        crimeTitle:this.crimeTitle,
+        crimeAddress:this.crimeAddress,
+        crimeCity:this.crimeCity,
+        crimeDesc:this.crimeDesc,
+        crimeDate: currentDate
+      }
+      console.log(newCrime);
+      axios.post("http://localhost:4000/createCrime", newCrime).then(res=>{
+        alert("successfully reported crime!");
+        this.crimeTitle = '';
+        this.crimeAddress = '';
+        this.crimeCity = '';
+        this.crimeDesc = '';
+        this.fetchCrimes();
+      }, err =>{
+        alert("Failed to report a crime!");
+      });
+    },
+    fetchCrimes() {
+  axios.get("http://localhost:4000/crimes")
+    .then(response => {
+      // Sortiranje zločina prema crimeDate polju
+      response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
+      // Ograničavanje na prvih 5 najnovijih zločina
+      this.crimes = response.data.slice(0, 5);
+    })
+    .catch(error => {
+      console.error("Failed to fetch crimes:", error);
+    });
+},
     initMap() {
       let autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'));
 

@@ -57,11 +57,11 @@ export default {
       showPassword: false,
       showConfirmPassword: false,
       confirmPass:'',
-        firstname: '',
-        lastname: '',
-        password: '',
-        email: '',
-        address: ''
+      firstname: '',
+      lastname: '',
+      password: '',
+      email: '',
+      address: ''
     };
   },
   computed: {
