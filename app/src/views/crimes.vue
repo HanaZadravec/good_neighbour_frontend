@@ -21,22 +21,26 @@
         </div>
 
         <div class="col-md-12">
-          <div
-            class="card text-center"
-            style="margin: 20px;"
-            v-for="crime in filteredCrimes"
-            :key="crime._id"
-          >
-            <div class="card-header">
-              Reported by: {{ crime.reporterEmail }}
-            </div>
+          <div class="card" style="margin:20px;" v-for="crime in crimes" :key="crime._id">
             <div class="card-body">
-              <h5 class="card-title">{{ crime.crimeTitle }}</h5>
+              <h5 class="card-title">Reported by: {{ crime.reporterEmail }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Title: {{ crime.crimeTitle }}</h6>
               <p class="card-text">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
               <p class="card-text">Description: {{ crime.crimeDesc }}</p>
-            </div>
-            <div class="card-footer text-muted">
-              {{ formatDate(crime.crimeDate) }}
+
+              <h6 class="card-subtitle mb-2 text-muted">Comments:</h6>
+              <ul>
+                <li v-for="comment in getCrimeComments(crime._id)" :key="comment._id">
+                  {{ comment.commentText }}
+                </li>
+              </ul>
+
+              <form @submit.prevent="addComment(crime._id)">
+                <div class="form-group">
+                  <input type="text" class="form-control" v-model="crime.newCommentText" placeholder="Enter a comment">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+              </form>
             </div>
           </div>
         </div>
@@ -50,6 +54,7 @@
 import appFooter from "@/components/footer.vue";
 import appNav from "@/components/nav.vue";
 import axios from "axios";
+
 export default {
   name: "crimes",
   components: {
@@ -61,51 +66,56 @@ export default {
       locationFilter: "",
       dateFilter: "",
       crimes: [],
-      filteredCrimes: [],
+      comments: [],
     };
   },
   mounted() {
     this.fetchCrimes();
+    this.fetchComments();
   },
   methods: {
     fetchCrimes() {
       axios
         .get("http://localhost:4000/crimes")
         .then((response) => {
-          // Sortiranje zločina prema crimeDate polju
           response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
-          this.crimes = response.data;
-          this.filteredCrimes = response.data;
+          this.crimes = response.data.map((crime) => ({
+            ...crime,
+            newCommentText: "", // Initialize newCommentText property for each crime
+          }));
         })
         .catch((error) => {
           console.error("Failed to fetch crimes:", error);
         });
     },
-    applyFilters() {
-      let filteredCrimes = this.crimes;
-      
-      if (this.dateFilter && this.locationFilter) {
-        filteredCrimes = this.crimes.filter(
-          (crime) =>
-            new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
-            crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
-        );
-      } else if (this.dateFilter) {
-        filteredCrimes = this.crimes.filter(
-          (crime) =>
-            new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter
-        );
-      } else if (this.locationFilter) {
-        filteredCrimes = this.crimes.filter((crime) =>
-          crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
-        );
-      }
-      
-      this.filteredCrimes = filteredCrimes;
+    fetchComments() {
+      axios
+        .get("http://localhost:4000/getComments")
+        .then((response) => {
+          this.comments = response.data;
+        })
+        .catch((error) => {
+          console.error("Failed to fetch comments:", error);
+        });
     },
-    formatDate(date) {
-      const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-      return new Date(date).toLocaleDateString(undefined, options);
+    getCrimeComments(crimeId) {
+      return this.comments.filter((comment) => comment.crimeId === crimeId);
+    },
+    addComment(crimeId) {
+      const crime = this.crimes.find((c) => c._id === crimeId);
+      if (crime) {
+        const commentText = crime.newCommentText;
+        axios
+          .post("http://localhost:4000/comment", { crimeId, commentText })
+          .then((response) => {
+            const newComment = response.data;
+            this.comments.push(newComment);
+            crime.newCommentText = ""; // Reset comment input field for this specific crime
+          })
+          .catch((error) => {
+            console.error("Failed to add comment:", error);
+          });
+      }
     },
   },
 };
