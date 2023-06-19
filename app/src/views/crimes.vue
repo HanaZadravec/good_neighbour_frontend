@@ -19,28 +19,46 @@
             <button @click.prevent="applyFilters" class="btn btn-round">Filter</button>
           </div>
         </div>
-
         <div class="col-md-12">
-          <div class="card" style="margin:20px;" v-for="crime in crimes" :key="crime._id">
+          <div
+            class="card text-center"
+            style="margin: 20px;"
+            v-for="crime in filteredCrimes"
+            :key="crime._id"
+          >
+            <div class="card-header">
+              Reported by: {{ crime.reporterEmail }}
+            </div>
             <div class="card-body">
-              <h5 class="card-title">Reported by: {{ crime.reporterEmail }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Title: {{ crime.crimeTitle }}</h6>
+              <h5 class="card-title">{{ crime.crimeTitle }}</h5>
               <p class="card-text">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
               <p class="card-text">Description: {{ crime.crimeDesc }}</p>
-
               <h6 class="card-subtitle mb-2 text-muted">Comments:</h6>
               <ul>
                 <li v-for="comment in getCrimeComments(crime._id)" :key="comment._id">
-                  {{ comment.commentText }}
+                  {{ comment.userEmail }} - {{ comment.commentText }}
+                  <ul>
+                    <li v-for="reply in comment.replies" :key="reply._id">
+                      {{ reply.userEmail }} - {{ reply.replyText }}
+                    </li>
+                  </ul>
+                  <form @submit.prevent="addReply(comment)">
+                    <div class="form-group">
+                      <input type="text" class="form-control" v-model="comment.newReplyText" placeholder="Enter a reply">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Reply</button>
+                  </form>
                 </li>
               </ul>
-
-              <form @submit.prevent="addComment(crime._id)">
+              <form @submit.prevent="addComment(crime)">
                 <div class="form-group">
                   <input type="text" class="form-control" v-model="crime.newCommentText" placeholder="Enter a comment">
                 </div>
                 <button type="submit" class="btn btn-primary">Add Comment</button>
               </form>
+            </div>
+            <div class="card-footer text-muted">
+              {{ formatDate(crime.crimeDate) }}
             </div>
           </div>
         </div>
@@ -50,7 +68,7 @@
   </div>
 </template>
 
-<script>
+ <script>
 import appFooter from "@/components/footer.vue";
 import appNav from "@/components/nav.vue";
 import axios from "axios";
@@ -63,30 +81,41 @@ export default {
   },
   data() {
     return {
+      comments: [],
+      crimes: [],
+      filteredCrimes: [],
+      email: "", 
       locationFilter: "",
       dateFilter: "",
-      crimes: [],
-      comments: [],
     };
   },
   mounted() {
     this.fetchCrimes();
     this.fetchComments();
+    this.fetchUserData();
   },
   methods: {
-    fetchCrimes() {
-      axios
-        .get("http://localhost:4000/crimes")
-        .then((response) => {
-          response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
-          this.crimes = response.data.map((crime) => ({
-            ...crime,
-            newCommentText: "", // Initialize newCommentText property for each crime
-          }));
-        })
-        .catch((error) => {
-          console.error("Failed to fetch crimes:", error);
-        });
+    applyFilters() {
+      let filteredCrimes = this.crimes;
+      
+      if (this.dateFilter && this.locationFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) =>
+            new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
+            crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
+        );
+      } else if (this.dateFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) =>
+            new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter
+        );
+      } else if (this.locationFilter) {
+        filteredCrimes = this.crimes.filter((crime) =>
+          crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
+        );
+      }
+      
+      this.filteredCrimes = filteredCrimes;
     },
     fetchComments() {
       axios
@@ -101,27 +130,70 @@ export default {
     getCrimeComments(crimeId) {
       return this.comments.filter((comment) => comment.crimeId === crimeId);
     },
-    addComment(crimeId) {
-      const crime = this.crimes.find((c) => c._id === crimeId);
-      if (crime) {
-        const commentText = crime.newCommentText;
-        axios
-          .post("http://localhost:4000/comment", { crimeId, commentText })
-          .then((response) => {
-            const newComment = response.data;
-            this.comments.push(newComment);
-            crime.newCommentText = ""; // Reset comment input field for this specific crime
-          })
-          .catch((error) => {
-            console.error("Failed to add comment:", error);
-          });
-      }
+   addComment(crime) {
+  const commentText = crime.newCommentText;
+  const userEmail = this.email;
+  axios
+    .post("http://localhost:4000/comment", { crimeId: crime._id, commentText, userEmail })
+    .then((response) => {
+      const newComment = response.data;
+      this.comments.push(newComment);
+      crime.newCommentText = "";
+      this.fetchComments(); // Dodan poziv metode za ponovno dohvaćanje komentara
+    })
+    .catch((error) => {
+      console.error("Failed to add comment:", error);
+    });
+},
+
+addReply(comment) {
+  const replyText = comment.newReplyText;
+  const userEmail = this.email;
+  axios
+    .post(`http://localhost:4000/comment/${comment._id}/reply`, { userEmail, replyText })
+    .then((response) => {
+      const newReply = response.data;
+      comment.replies.push(newReply);
+      comment.newReplyText = "";
+      this.fetchComments(); // Dodan poziv metode za ponovno dohvaćanje komentara
+    })
+    .catch((error) => {
+      console.error("Failed to add reply:", error);
+    });
+},
+    fetchUserData() {
+      axios
+        .get("http://localhost:4000/user", { headers: { token: localStorage.getItem('token') } })
+        .then((res) => {
+          this.email = res.data.user.email;
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user data:", error);
+        });
+    },
+    fetchCrimes() {
+      axios
+        .get("http://localhost:4000/crimes")
+        .then((response) => {
+          response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
+          this.crimes = response.data;
+          this.filteredCrimes = response.data;
+        })
+        .catch((error) => {
+          console.error("Failed to fetch crimes:", error);
+        });
+    },
+    formatDate(date) {
+      const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+      return new Date(date).toLocaleDateString(undefined, options);
     },
   },
 };
 </script>
 
+
 <style scoped>
+
 .boja {
   background-size: cover;
   background-position: center;
