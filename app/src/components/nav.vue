@@ -27,9 +27,6 @@
           <button class="logout-button" @click.prevent="logOut">LOGOUT</button>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/chat"><i class="fas fa-comments"></i></a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="/notifications"><i class="fas fa-bell"></i></a>
         </li>
       </ul>

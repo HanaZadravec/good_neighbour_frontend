@@ -74,33 +74,29 @@ export default {
       crimes: []
     };
   },
-  mounted() {
-    this.fetchUserData();
-    this.fetchCrimes();
+  async mounted() {
+    await this.fetchUserData();
+    await this.fetchCrimes();
   },
   methods: {
-    fetchUserData() {
-      axios.get("http://localhost:4000/user", { headers: { token: localStorage.getItem('token') } })
-        .then(res => {
-          this.email = res.data.user.email;
-        })
-        .catch(error => {
-          console.error("Failed to fetch user data:", error);
-        });
+    async fetchUserData() {
+      try {
+        const response = await axios.get("http://localhost:4000/user", { headers: { token: localStorage.getItem('token') } });
+        this.email = response.data.user.email;
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
     },
-    fetchCrimes() {
-      axios.get("http://localhost:4000/crimes")
-        .then(response => {
-          // Sortiranje zločina prema crimeDate polju
-          response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
-          // Ograničavanje na prvih 5 najnovijih zločina
-          this.crimes = response.data.slice(0, 5);
-        })
-        .catch(error => {
-          console.error("Failed to fetch crimes:", error);
-        });
+    async fetchCrimes() {
+      try {
+        const response = await axios.get("http://localhost:4000/crimes");
+        response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
+        this.crimes = response.data.slice(0, 5);
+      } catch (error) {
+        console.error("Failed to fetch crimes:", error);
+      }
     },
-    reportCrime() {
+    async reportCrime() {
       const currentDate = new Date();
       let newCrime = {
         reporterEmail: this.email,
@@ -109,19 +105,18 @@ export default {
         crimeCity: this.crimeCity,
         crimeDesc: this.crimeDesc,
         crimeDate: currentDate
+      };
+      try {
+        const res = await axios.post("http://localhost:4000/createCrime", newCrime);
+        alert("Successfully reported crime!");
+        this.crimeTitle = '';
+        this.crimeAddress = '';
+        this.crimeCity = '';
+        this.crimeDesc = '';
+        await this.fetchCrimes();
+      } catch (err) {
+        alert("Failed to report a crime!");
       }
-      axios.post("http://localhost:4000/createCrime", newCrime)
-        .then(res => {
-          alert("Successfully reported crime!");
-          this.crimeTitle = '';
-          this.crimeAddress = '';
-          this.crimeCity = '';
-          this.crimeDesc = '';
-          this.fetchCrimes();
-        })
-        .catch(err => {
-          alert("Failed to report a crime!");
-        });
     },
   },
 }

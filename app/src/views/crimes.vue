@@ -84,104 +84,110 @@ export default {
       comments: [],
       crimes: [],
       filteredCrimes: [],
-      email: "", 
+      email: "",
       locationFilter: "",
       dateFilter: "",
     };
   },
-  mounted() {
-    this.fetchCrimes();
-    this.fetchComments();
-    this.fetchUserData();
+  async mounted() {
+    await this.fetchCrimes();
+    await this.fetchComments();
+    await this.fetchUserData();
   },
   methods: {
     applyFilters() {
       let filteredCrimes = this.crimes;
-      
+
       if (this.dateFilter && this.locationFilter) {
         filteredCrimes = this.crimes.filter(
           (crime) =>
-            new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
-            crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
+            new Date(crime.crimeDate).toISOString().substr(0, 10) ===
+              this.dateFilter &&
+            crime.crimeCity
+              .toLowerCase()
+              .includes(this.locationFilter.toLowerCase())
         );
       } else if (this.dateFilter) {
         filteredCrimes = this.crimes.filter(
           (crime) =>
-            new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter
+            new Date(crime.crimeDate).toISOString().substr(0, 10) ===
+            this.dateFilter
         );
       } else if (this.locationFilter) {
         filteredCrimes = this.crimes.filter((crime) =>
-          crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
+          crime.crimeCity
+            .toLowerCase()
+            .includes(this.locationFilter.toLowerCase())
         );
       }
-      
+
       this.filteredCrimes = filteredCrimes;
     },
-    fetchComments() {
-      axios
-        .get("http://localhost:4000/getComments")
-        .then((response) => {
-          this.comments = response.data;
-        })
-        .catch((error) => {
-          console.error("Failed to fetch comments:", error);
-        });
+    async fetchComments() {
+      try {
+        const response = await axios.get("http://localhost:4000/getComments");
+        this.comments = response.data;
+      } catch (error) {
+        console.error("Failed to fetch comments:", error);
+      }
     },
     getCrimeComments(crimeId) {
       return this.comments.filter((comment) => comment.crimeId === crimeId);
     },
-   addComment(crime) {
-  const commentText = crime.newCommentText;
-  const userEmail = this.email;
-  axios
-    .post("http://localhost:4000/comment", { crimeId: crime._id, commentText, userEmail })
-    .then((response) => {
-      const newComment = response.data;
-      this.comments.push(newComment);
-      crime.newCommentText = "";
-      this.fetchComments(); // Dodan poziv metode za ponovno dohvaćanje komentara
-    })
-    .catch((error) => {
-      console.error("Failed to add comment:", error);
-    });
-},
-
-addReply(comment) {
-  const replyText = comment.newReplyText;
-  const userEmail = this.email;
-  axios
-    .post(`http://localhost:4000/comment/${comment._id}/reply`, { userEmail, replyText })
-    .then((response) => {
-      const newReply = response.data;
-      comment.replies.push(newReply);
-      comment.newReplyText = "";
-      this.fetchComments(); // Dodan poziv metode za ponovno dohvaćanje komentara
-    })
-    .catch((error) => {
-      console.error("Failed to add reply:", error);
-    });
-},
-    fetchUserData() {
-      axios
-        .get("http://localhost:4000/user", { headers: { token: localStorage.getItem('token') } })
-        .then((res) => {
-          this.email = res.data.user.email;
-        })
-        .catch((error) => {
-          console.error("Failed to fetch user data:", error);
+    async addComment(crime) {
+      const commentText = crime.newCommentText;
+      const userEmail = this.email;
+      try {
+        const response = await axios.post("http://localhost:4000/comment", {
+          crimeId: crime._id,
+          commentText,
+          userEmail,
         });
+        const newComment = response.data;
+        this.comments.push(newComment);
+        crime.newCommentText = "";
+        await this.fetchComments();
+      } catch (error) {
+        console.error("Failed to add comment:", error);
+      }
     },
-    fetchCrimes() {
-      axios
-        .get("http://localhost:4000/crimes")
-        .then((response) => {
-          response.data.sort((a, b) => new Date(b.crimeDate) - new Date(a.crimeDate));
-          this.crimes = response.data;
-          this.filteredCrimes = response.data;
-        })
-        .catch((error) => {
-          console.error("Failed to fetch crimes:", error);
+    async addReply(comment) {
+      const replyText = comment.newReplyText;
+      const userEmail = this.email;
+      try {
+        const response = await axios.post(
+          `http://localhost:4000/comment/${comment._id}/reply`,
+          { userEmail, replyText }
+        );
+        const newReply = response.data;
+        comment.replies.push(newReply);
+        comment.newReplyText = "";
+        await this.fetchComments();
+      } catch (error) {
+        console.error("Failed to add reply:", error);
+      }
+    },
+    async fetchUserData() {
+      try {
+        const res = await axios.get("http://localhost:4000/user", {
+          headers: { token: localStorage.getItem("token") },
         });
+        this.email = res.data.user.email;
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    },
+    async fetchCrimes() {
+      try {
+        const response = await axios.get("http://localhost:4000/crimes");
+        response.data.sort(
+          (a, b) => new Date(b.crimeDate) - new Date(a.crimeDate)
+        );
+        this.crimes = response.data;
+        this.filteredCrimes = response.data;
+      } catch (error) {
+        console.error("Failed to fetch crimes:", error);
+      }
     },
     formatDate(date) {
       const options = { year: "numeric", month: "2-digit", day: "2-digit" };
