@@ -29,6 +29,7 @@
                     <div class="card-body">
                     <h6 class="card-subtitle mb-2 tekst">Title: {{ crime.crimeTitle }}</h6>
                     <p class="card-text tekst">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
+                    <p class="card-text tekst">Crime level: {{crime.crimeLevel}}</p>
                     <p class="card-text tekst">Description: {{ crime.crimeDesc }}</p>
             </div>
           </div>

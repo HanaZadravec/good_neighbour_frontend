@@ -27,6 +27,14 @@
                     <textarea class="form-control" v-model="crimeDesc" placeholder="Enter crime description" rows="5"></textarea>
                   </div>
                   <div class="form-group">
+                    <label for="crimeLevel">Crime Level:</label>
+                    <select class="form-control" v-model="crimeLevel" id="crimeLevel">
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-danger">Submit</button>
                   </div>
                 </div>
@@ -44,6 +52,7 @@
               <h6 class="card-subtitle mb-2 text-muted">Title: {{ crime.crimeTitle }}</h6>
               <p class="card-text">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
               <p class="card-text">Description: {{ crime.crimeDesc }}</p>
+              <p class="card-text">Crime Level: {{crime.crimeLevel}}</p>
             </div>
           </div>
         </div>
@@ -71,7 +80,8 @@ export default {
       crimeCity: '',
       crimeDesc: '',
       email: '',
-      crimes: []
+      crimes: [],
+      crimeLevel: 'Low'
     };
   },
   async mounted() {
@@ -104,7 +114,8 @@ export default {
         crimeAddress: this.crimeAddress,
         crimeCity: this.crimeCity,
         crimeDesc: this.crimeDesc,
-        crimeDate: currentDate
+        crimeDate: currentDate,
+        crimeLevel: this.crimeLevel
       };
       try {
         const res = await axios.post("http://localhost:4000/createCrime", newCrime);
@@ -113,6 +124,7 @@ export default {
         this.crimeAddress = '';
         this.crimeCity = '';
         this.crimeDesc = '';
+        this.crimeLevel = 'Low';
         await this.fetchCrimes();
       } catch (err) {
         alert("Failed to report a crime!");

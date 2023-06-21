@@ -51,6 +51,9 @@ export default {
     };
   },
   computed: {
+    currentView() {
+      return this.$route.name;
+    },
     unreadNotifications() {
       return this.notifications.filter(
         (notification) => notification.status === 'unread'

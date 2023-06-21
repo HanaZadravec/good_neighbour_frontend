@@ -12,6 +12,15 @@
             <input type="text" id="location" v-model="locationFilter" class="input-round" />
           </div>
           <div>
+        <label for="crime-level" style="font-size: 20px;">Crime Level:</label>
+        <select id="crime-level" v-model="crimeLevelFilter" class="input-round">
+        <option value="">All</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+         </select>
+</div>
+          <div>
             <label for="date" style="font-size: 20px;">Date:</label>
             <input type="date" id="date" v-model="dateFilter" class="input-round" />
           </div>
@@ -32,6 +41,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ crime.crimeTitle }}</h5>
               <p class="card-text">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
+              <p class="card-text">Crime Level: {{crime.crimeLevel}}</p>
               <p class="card-text">Description: {{ crime.crimeDesc }}</p>
               <h6 class="card-subtitle mb-2 text-muted">Comments:</h6>
               <ul>
@@ -87,6 +97,7 @@ export default {
       email: "",
       locationFilter: "",
       dateFilter: "",
+      crimeLevelFilter: ""
     };
   },
   async mounted() {
@@ -96,33 +107,51 @@ export default {
   },
   methods: {
     applyFilters() {
-      let filteredCrimes = this.crimes;
+  let filteredCrimes = this.crimes;
 
-      if (this.dateFilter && this.locationFilter) {
-        filteredCrimes = this.crimes.filter(
-          (crime) =>
-            new Date(crime.crimeDate).toISOString().substr(0, 10) ===
-              this.dateFilter &&
-            crime.crimeCity
-              .toLowerCase()
-              .includes(this.locationFilter.toLowerCase())
-        );
-      } else if (this.dateFilter) {
-        filteredCrimes = this.crimes.filter(
-          (crime) =>
-            new Date(crime.crimeDate).toISOString().substr(0, 10) ===
-            this.dateFilter
-        );
-      } else if (this.locationFilter) {
-        filteredCrimes = this.crimes.filter((crime) =>
-          crime.crimeCity
-            .toLowerCase()
-            .includes(this.locationFilter.toLowerCase())
-        );
-      }
+  if (this.dateFilter && this.locationFilter && this.crimeLevelFilter) {
+    filteredCrimes = this.crimes.filter(
+      (crime) =>
+        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
+        crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase()) &&
+        crime.crimeLevel === this.crimeLevelFilter
+    );
+  } else if (this.dateFilter && this.locationFilter) {
+    filteredCrimes = this.crimes.filter(
+      (crime) =>
+        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
+        crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
+    );
+  } else if (this.dateFilter && this.crimeLevelFilter) {
+    filteredCrimes = this.crimes.filter(
+      (crime) =>
+        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
+        crime.crimeLevel === this.crimeLevelFilter
+    );
+  } else if (this.locationFilter && this.crimeLevelFilter) {
+    filteredCrimes = this.crimes.filter(
+      (crime) =>
+        crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase()) &&
+        crime.crimeLevel === this.crimeLevelFilter
+    );
+  } else if (this.dateFilter) {
+    filteredCrimes = this.crimes.filter(
+      (crime) =>
+        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter
+    );
+  } else if (this.locationFilter) {
+    filteredCrimes = this.crimes.filter((crime) =>
+      crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
+    );
+  } else if (this.crimeLevelFilter) {
+    filteredCrimes = this.crimes.filter(
+      (crime) => crime.crimeLevel === this.crimeLevelFilter
+    );
+  }
 
-      this.filteredCrimes = filteredCrimes;
-    },
+  this.filteredCrimes = filteredCrimes;
+},
+
     async fetchComments() {
       try {
         const response = await axios.get("http://localhost:4000/getComments");
