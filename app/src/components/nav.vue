@@ -1,4 +1,4 @@
-<template>
+ <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-black">
     <a class="navbar-brand" href="/home"><img  src="@/assets/logo.png" style="height:70px;width:90px;"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,8 +26,11 @@
         <li class="nav-item">
           <button class="logout-button" @click.prevent="logOut">LOGOUT</button>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/notifications"><i class="fas fa-bell"></i></a>
+         <li class="nav-item">
+        <a class="nav-link" href="/notifications">
+          <i class="fa fa-bell"></i>
+          <span class="badge badge-danger">{{ unreadNotificationsCount }}</span>
+        </a>
         </li>
       </ul>
     </div>
@@ -35,17 +38,63 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "Navbar",
-  computed: {
-    currentView() {
-      return this.$route.name;
-    },
+  data() {
+    return {
+      showNotifications: false,
+      notifications: [],
+      userId: '',
+      city: ''
+    };
   },
-  methods: {logOut(){
-    localStorage.clear();
-    this.$router.push("/login");
-  }}
+  computed: {
+    unreadNotifications() {
+      return this.notifications.filter(
+        (notification) => notification.status === 'unread'
+      );
+    },
+    unreadNotificationsCount() {
+      return this.unreadNotifications.length;
+    }
+  },
+  async mounted() {
+    await this.fetchUserData();
+    this.fetchNotifications();
+    setInterval(this.fetchNotifications, 2000);
+  },
+  methods: {
+    logOut() {
+      localStorage.clear();
+      this.$router.push('/login');
+    },
+   async fetchUserData() {
+      try {
+        const response = await axios.get('http://localhost:4000/user', {
+          headers: { token: localStorage.getItem('token') }
+        });
+        this.city = response.data.user.address;
+        this.userId = response.data.user.id;
+        console.log(response.data);
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    },
+    fetchNotifications() {
+      const city = this.city;
+      const userId = this.userId;
+      axios
+        .get(`http://localhost:4000/notifications/${city}/${userId}`)
+        .then((response) => {
+          this.notifications = response.data;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  }
 };
 </script>
 

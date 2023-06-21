@@ -9,6 +9,7 @@ import contact from '@/views/contact.vue'
 import crimes from '@/views/crimes.vue'
 import profile from '@/views/myProfile.vue'
 import notifications from '@/views/notifications.vue'
+import admin from '@/views/admin.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -60,6 +61,11 @@ const router = new VueRouter({
       name: 'notifications',
       component: notifications,meta: { requiresAuth: true }
     },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: admin,meta: { requiresAuth: true }
+    },
   ]
 })
 
@@ -82,6 +88,7 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
 
 
 export default router
