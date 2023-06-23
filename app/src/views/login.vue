@@ -52,19 +52,31 @@
         this.showPassword = !this.showPassword;
       },
       loginUser() {
-      let user={
-        email:this.email,
-        password:this.password
-      }
-      axios.post("http://localhost:4000/login", user).then(res =>{
-        if(res.status===200){
-          localStorage.setItem('token', res.data.token);
+  let user = {
+    email: this.email,
+    password: this.password
+  };
+
+  axios.post("http://localhost:4000/login", user)
+    .then(res => {
+      if (res.status === 200) {
+        localStorage.setItem('token', res.data.token);
+
+        console.log(res.data);
+        // Spremanje isAdmin u local storage
+        localStorage.setItem('isAdmin', res.data.user.isAdmin);
+
+        // Provjera isAdmin vrijednosti i redirekcija
+        if (res.data.user.isAdmin) {
+          this.$router.push("/admin");
+        } else {
           this.$router.push("/home");
         }
-        },
-        err=>{
-          alert(err.response.data.error);
-        });
+      }
+    })
+    .catch(err => {
+      alert(err.response.data.error);
+    });
       }
     }
   };

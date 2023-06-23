@@ -11,24 +11,6 @@
             <p style="font-size:23px;">E-mail: goodneighbur@gmail.com</p>
             <p style="font-size:23px;">Adress: Ul. Petra Preradovica 9, Pula</p>
           </div>
-          <div class="col-md-6" style="margin-bottom:50px;">
-            <h2 style="text-align:center;margin-bottom:20px;">Get in Touch</h2>
-            <form>
-              <div class="form-group">
-                <label for="name">Name and surname:</label>
-                <input type="text" id="name" v-model="name" class="form-control input-round" placeholder="First and last name" required>
-              </div>
-              <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" v-model="email" class="form-control input-round" placeholder="Your email address" required>
-              </div>
-              <div class="form-group">
-                <label for="message">Message:</label>
-                <textarea id="message" v-model="message" class="form-control input-round" placeholder="message" required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary btn-round">Send</button>
-            </form>
-          </div>
         </div>
       </div>
     <appFooter />
@@ -43,7 +25,7 @@ export default{
     components:{
         appFooter,
         appNav
-    }
+    },
 }
 </script>
 

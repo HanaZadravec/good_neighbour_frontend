@@ -50,7 +50,7 @@
             <div class="card-body">
               <h5 class="card-title">Reported by: {{ crime.reporterEmail }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">Title: {{ crime.crimeTitle }}</h6>
-              <p class="card-text">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
+              <p class="card-text">Address: <span class="capitalize">{{ crime.crimeAddress }}</span>, <span class="capitalize">{{ crime.crimeCity }}</span></p>
               <p class="card-text">Description: {{ crime.crimeDesc }}</p>
               <p class="card-text">Crime Level: {{crime.crimeLevel}}</p>
             </div>
@@ -161,7 +161,9 @@ h1 {
   margin-bottom: 10px;
   font-family: 'Norwester', sans-serif;
 }
-
+.capitalize {
+  text-transform: capitalize;
+}
 .boja {
   background-size: cover;
   background-position: center;

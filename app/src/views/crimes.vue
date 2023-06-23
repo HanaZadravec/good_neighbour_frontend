@@ -40,10 +40,11 @@
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ crime.crimeTitle }}</h5>
-              <p class="card-text">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
+              <p class="card-text">Address: <span class="capitalize">{{ crime.crimeAddress }}</span>, <span class="capitalize">{{ crime.crimeCity }}</span></p>
               <p class="card-text">Crime Level: {{crime.crimeLevel}}</p>
               <p class="card-text">Description: {{ crime.crimeDesc }}</p>
               <h6 class="card-subtitle mb-2 text-muted">Comments:</h6>
+              <p v-if="getCrimeComments(crime._id).length === 0">No comments</p>
               <ul>
                 <li v-for="comment in getCrimeComments(crime._id)" :key="comment._id">
                   {{ comment.userEmail }} - {{ comment.commentText }}
@@ -228,7 +229,9 @@ export default {
 
 
 <style scoped>
-
+.capitalize {
+  text-transform: capitalize;
+}
 .boja {
   background-size: cover;
   background-position: center;
