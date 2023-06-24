@@ -51,8 +51,10 @@
               <h5 class="card-title">Reported by: {{ crime.reporterEmail }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">Title: {{ crime.crimeTitle }}</h6>
               <p class="card-text">Address: <span class="capitalize">{{ crime.crimeAddress }}</span>, <span class="capitalize">{{ crime.crimeCity }}</span></p>
-              <p class="card-text">Description: {{ crime.crimeDesc }}</p>
               <p class="card-text">Crime Level: {{crime.crimeLevel}}</p>
+              <p class="card-text">Is crime resolved: {{crime.resolved}} </p>
+              <p class="card-text">Description: {{ crime.crimeDesc }}</p>
+            
             </div>
           </div>
         </div>

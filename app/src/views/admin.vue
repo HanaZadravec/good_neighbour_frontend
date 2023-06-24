@@ -3,7 +3,7 @@
     <adminNav />
     <div class="container">
       <h1>REPORTED CRIMES</h1>
-      <div class="card">
+      <div v-for="crime in crimes" :key="crime._id" class="card">
         <div class="card-header">
           Reported by: {{ crime.reporterEmail }}
         </div>
@@ -11,6 +11,7 @@
           <h5 class="card-title">{{ crime.crimeTitle }}</h5>
           <p class="card-text">Address: <span class="capitalize">{{ crime.crimeAddress }}</span>, <span class="capitalize">{{ crime.crimeCity }}</span></p>
           <p class="card-text">Crime Level: {{ crime.crimeLevel }}</p>
+          <p class="card-text">Is crime resolved: {{crime.resolved}} </p>
           <p class="card-text">Description: {{ crime.crimeDesc }}</p>
           <h6 class="card-subtitle mb-2 text-muted">Comments:</h6>
           <transition-group name="fade" tag="ul">
@@ -30,12 +31,16 @@
             </li>
           </transition-group>
           <p v-if="getCrimeComments(crime._id).length === 0">No comments</p>
+          <button @click="deleteCrime(crime._id)">Delete Crime</button>
+          <button v-if="crime.resolved === 'Not resolved'" @click="markCrimeAsResolved(crime._id)">Mark as Resolved</button>
         </div>
       </div>
     </div>
     <appFooter />
   </div>
 </template>
+
+
 
 <script>
 import appFooter from "@/components/footer.vue";
@@ -50,14 +55,7 @@ export default {
   },
   data() {
     return {
-      crime: {
-        reporterEmail: "",
-        crimeTitle: "",
-        crimeAddress: "",
-        crimeCity: "",
-        crimeLevel: "",
-        crimeDesc: "",
-      },
+      crimes: [],
       comments: [],
     };
   },
@@ -70,9 +68,6 @@ export default {
       try {
         const response = await axios.get("http://localhost:4000/crimes");
         this.crimes = response.data;
-        if (this.crimes.length > 0) {
-          this.crime = this.crimes[0];
-        }
       } catch (error) {
         console.error("Failed to fetch crimes:", error);
       }
@@ -93,15 +88,32 @@ export default {
         await axios.delete(`http://localhost:4000/comments/${commentId}`);
         await this.fetchComments();
       } catch (error) {
-        console.error('Failed to delete comment:', error);
+        console.error("Failed to delete comment:", error);
       }
     },
     async deleteReply(commentId, replyId) {
       try {
         await axios.delete(`http://localhost:4000/comments/${commentId}/replies/${replyId}`);
-        await this.fetchComments(); 
+        await this.fetchComments();
       } catch (error) {
-        console.error('Failed to delete reply:', error);
+        console.error("Failed to delete reply:", error);
+      }
+    },
+    async deleteCrime(crimeId) {
+      try {
+        await axios.delete(`http://localhost:4000/crimes/${crimeId}`);
+        await this.fetchCrimes();
+      } catch (error) {
+        console.error("Failed to delete crime:", error);
+      }
+    },
+    async markCrimeAsResolved(crimeId) {
+      try {
+        await axios.put(`http://localhost:4000/markCrime/${crimeId}`);
+        await this.fetchCrimes();
+        alert("resolved");
+      } catch (error) {
+        console.error("Failed to mark crime as resolved:", error);
       }
     },
   },

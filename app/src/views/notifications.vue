@@ -66,6 +66,7 @@ export default {
       axios
         .put(`http://localhost:4000/notifications/${notification._id}`, notification)
         .then(() => {
+          this.fetchNotifications();
         })
         .catch((error) => {
           console.error(error);

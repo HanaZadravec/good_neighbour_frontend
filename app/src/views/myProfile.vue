@@ -28,8 +28,9 @@
                     <div class="card" style="margin:20px;" v-for="crime in crimes" :key="crime._id">
                     <div class="card-body">
                     <h6 class="card-subtitle mb-2 tekst">Title: {{ crime.crimeTitle }}</h6>
-                    <p class="card-text tekst">Address: {{ crime.crimeAddress }}, {{ crime.crimeCity }}</p>
+                    <p class="card-text tekst">Address: <span class="capitalize tekst">{{ crime.crimeAddress }}</span>, <span class="capitalize tekst">{{ crime.crimeCity }}</span></p>
                     <p class="card-text tekst">Crime level: {{crime.crimeLevel}}</p>
+                    <p class="card-text tekst">Is crime resolved: {{crime.resolved}} </p>
                     <p class="card-text tekst">Description: {{ crime.crimeDesc }}</p>
             </div>
           </div>
@@ -89,6 +90,9 @@ export default {
 </script>
 
 <style scoped>
+.capitalize {
+  text-transform: capitalize;
+}
 .boja{
     background-size: cover;
     background-position: center;
