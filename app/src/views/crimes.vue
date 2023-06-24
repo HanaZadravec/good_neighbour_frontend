@@ -1,76 +1,126 @@
-<template>
-  <div class="boja">
-    <appNav />
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <h1>Crimes</h1>
-        </div>
-        <div class="col-md-12 filter-inputs" style="margin-bottom: 30px;">
-          <div>
-            <label for="location" style="font-size: 20px;">Location:</label>
-            <input type="text" id="location" v-model="locationFilter" class="input-round" />
+ <template>
+  <div>
+    <div class="boja">
+      <appNav />
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1>Crimes</h1>
           </div>
-          <div>
-        <label for="crime-level" style="font-size: 20px;">Crime Level:</label>
-        <select id="crime-level" v-model="crimeLevelFilter" class="input-round">
-        <option value="">All</option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-         </select>
-</div>
-          <div>
-            <label for="date" style="font-size: 20px;">Date:</label>
-            <input type="date" id="date" v-model="dateFilter" class="input-round" />
-          </div>
-          <div>
-            <button @click.prevent="applyFilters" class="btn btn-round">Filter</button>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div
-            class="card text-center"
-            style="margin: 20px;"
-            v-for="crime in filteredCrimes"
-            :key="crime._id"
-          >
-            <div class="card-header">
-              Reported by: {{ crime.reporterEmail }}
+          <div class="col-md-12 filter-inputs" style="margin-bottom: 30px">
+            <div>
+              <label for="location" style="font-size: 20px">Location:</label>
+              <input
+                type="text"
+                id="location"
+                v-model="locationFilter"
+                class="input-round"
+              />
             </div>
-            <div class="card-body">
-              <h5 class="card-title">{{ crime.crimeTitle }}</h5>
-              <p class="card-text">Address: <span class="capitalize">{{ crime.crimeAddress }}</span>, <span class="capitalize">{{ crime.crimeCity }}</span></p>
-              <p class="card-text">Crime Level: {{crime.crimeLevel}}</p>
-              <p class="card-text">Is crime resolved: {{crime.resolved}} </p>
-              <p class="card-text">Description: {{ crime.crimeDesc }}</p>
-              <h6 class="card-subtitle mb-2 text-muted">Comments:</h6>
-              <p v-if="getCrimeComments(crime._id).length === 0">No comments</p>
-              <ul>
-                <li v-for="comment in getCrimeComments(crime._id)" :key="comment._id">
+            <div>
+              <label for="crime-level" style="font-size: 20px">Crime Level:</label>
+              <select
+                id="crime-level"
+                v-model="crimeLevelFilter"
+                class="input-round"
+              >
+                <option value="">All</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+            <div>
+              <label for="date" style="font-size: 20px">Date:</label>
+              <input
+                type="date"
+                id="date"
+                v-model="dateFilter"
+                class="input-round"
+              />
+            </div>
+            <div>
+              <button @click.prevent="applyFilters" class="btn btn-round">
+                Filter
+              </button>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div
+              class="card text-center"
+              style="margin: 20px"
+              v-for="crime in filteredCrimes"
+              :key="crime._id"
+            >
+              <div class="card-header">
+                Reported by: {{ crime.reporterEmail }}
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{ crime.crimeTitle }}</h5>
+                <p class="card-text">
+                  Address: <span class="capitalize">{{ crime.crimeAddress }}</span
+                  >, <span class="capitalize">{{ crime.crimeCity }}</span>
+                </p>
+                <p class="card-text">Crime Level: {{ crime.crimeLevel }}</p>
+                <p class="card-text">Is crime resolved: {{ crime.resolved }}</p>
+                <p class="card-text">Description: {{ crime.crimeDesc }}</p>
+                <h6 class="card-subtitle mb-2 text-muted text-left">Comments:</h6>
+                <p class="text-left" v-if="getCrimeComments(crime._id).length === 0">No comments</p>
+                <div
+                  v-for="comment in getCrimeComments(crime._id)"
+                  :key="comment._id"
+                  style="margin-left: 20px"
+                  class="text-left"
+                >
                   {{ comment.userEmail }} - {{ comment.commentText }}
-                  <ul>
-                    <li v-for="reply in comment.replies" :key="reply._id">
-                      {{ reply.userEmail }} - {{ reply.replyText }}
-                    </li>
-                  </ul>
-                  <form @submit.prevent="addReply(comment)" v-if="crime.resolved === 'Not resolved'">
+                  
+                  <div
+                    v-for="reply in comment.replies"
+                    :key="reply._id"
+                    style="margin-left: 20px"
+                  >
+                   - {{ reply.userEmail }} - {{ reply.replyText }}
+                  </div>
+                  <form
+                    @submit.prevent="addReply(comment)"
+                    v-if="crime.resolved === 'Not resolved'"
+                    style="margin-top: 10px"
+                    class="text-center"
+                  >
                     <div class="form-group">
-                      <input type="text" class="form-control" v-model="comment.newReplyText" placeholder="Enter a reply">
+                      <input
+                        type="text"
+                        class="form-control"
+                        v-model="comment.newReplyText"
+                        placeholder="Enter a reply"
+                      />
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Reply</button>
+                    <button type="submit" class="btn btn-primary btn-danger">
+                      Add Reply
+                    </button>
                   </form>
-                </li>
-              </ul>
-              <form @submit.prevent="addComment(crime)" v-if="crime.resolved === 'Not resolved'">
-                <div class="form-group">
-                  <input type="text" class="form-control" v-model="crime.newCommentText" placeholder="Enter a comment">
                 </div>
-                <button type="submit" class="btn btn-primary">Add Comment</button>
-              </form>
-            </div>
-            <div class="card-footer text-muted">
-              {{ formatDate(crime.crimeDate) }}
+                <form
+                  @submit.prevent="addComment(crime)"
+                  v-if="crime.resolved === 'Not resolved'"
+                  style="margin-top: 10px"
+                >
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="crime.newCommentText"
+                      placeholder="Enter a comment"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-danger">
+                    Add Comment
+                  </button>
+                </form>
+              </div>
+              <div class="card-footer text-muted">
+                {{ formatDate(crime.crimeDate) }}
+              </div>
             </div>
           </div>
         </div>
@@ -80,7 +130,8 @@
   </div>
 </template>
 
- <script>
+
+<script>
 import appFooter from "@/components/footer.vue";
 import appNav from "@/components/nav.vue";
 import axios from "axios";
@@ -109,50 +160,61 @@ export default {
   },
   methods: {
     applyFilters() {
-  let filteredCrimes = this.crimes;
+      let filteredCrimes = this.crimes;
 
-  if (this.dateFilter && this.locationFilter && this.crimeLevelFilter) {
-    filteredCrimes = this.crimes.filter(
-      (crime) =>
-        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
-        crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase()) &&
-        crime.crimeLevel === this.crimeLevelFilter
-    );
-  } else if (this.dateFilter && this.locationFilter) {
-    filteredCrimes = this.crimes.filter(
-      (crime) =>
-        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
-        crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
-    );
-  } else if (this.dateFilter && this.crimeLevelFilter) {
-    filteredCrimes = this.crimes.filter(
-      (crime) =>
-        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter &&
-        crime.crimeLevel === this.crimeLevelFilter
-    );
-  } else if (this.locationFilter && this.crimeLevelFilter) {
-    filteredCrimes = this.crimes.filter(
-      (crime) =>
-        crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase()) &&
-        crime.crimeLevel === this.crimeLevelFilter
-    );
-  } else if (this.dateFilter) {
-    filteredCrimes = this.crimes.filter(
-      (crime) =>
-        new Date(crime.crimeDate).toISOString().substr(0, 10) === this.dateFilter
-    );
-  } else if (this.locationFilter) {
-    filteredCrimes = this.crimes.filter((crime) =>
-      crime.crimeCity.toLowerCase().includes(this.locationFilter.toLowerCase())
-    );
-  } else if (this.crimeLevelFilter) {
-    filteredCrimes = this.crimes.filter(
-      (crime) => crime.crimeLevel === this.crimeLevelFilter
-    );
-  }
+      if (this.dateFilter && this.locationFilter && this.crimeLevelFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) =>
+            new Date(crime.crimeDate).toISOString().substring(0, 10) ===
+              this.dateFilter &&
+            crime.crimeCity
+              .toLowerCase()
+              .includes(this.locationFilter.toLowerCase()) &&
+            crime.crimeLevel === this.crimeLevelFilter
+        );
+      } else if (this.dateFilter && this.locationFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) =>
+            new Date(crime.crimeDate).toISOString().substring(0, 10) ===
+              this.dateFilter &&
+            crime.crimeCity
+              .toLowerCase()
+              .includes(this.locationFilter.toLowerCase())
+        );
+      } else if (this.dateFilter && this.crimeLevelFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) =>
+            new Date(crime.crimeDate).toISOString().substring(0, 10) ===
+              this.dateFilter && crime.crimeLevel === this.crimeLevelFilter
+        );
+      } else if (this.locationFilter && this.crimeLevelFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) =>
+            crime.crimeCity
+              .toLowerCase()
+              .includes(this.locationFilter.toLowerCase()) &&
+            crime.crimeLevel === this.crimeLevelFilter
+        );
+      } else if (this.dateFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) =>
+            new Date(crime.crimeDate).toISOString().substring(0, 10) ===
+            this.dateFilter
+        );
+      } else if (this.locationFilter) {
+        filteredCrimes = this.crimes.filter((crime) =>
+          crime.crimeCity
+            .toLowerCase()
+            .includes(this.locationFilter.toLowerCase())
+        );
+      } else if (this.crimeLevelFilter) {
+        filteredCrimes = this.crimes.filter(
+          (crime) => crime.crimeLevel === this.crimeLevelFilter
+        );
+      }
 
-  this.filteredCrimes = filteredCrimes;
-},
+      this.filteredCrimes = filteredCrimes;
+    },
 
     async fetchComments() {
       try {
@@ -227,7 +289,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .capitalize {

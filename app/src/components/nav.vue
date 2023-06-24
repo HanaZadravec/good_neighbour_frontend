@@ -101,8 +101,6 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 .navbar-nav .nav-link {
     position: relative;
@@ -121,8 +119,7 @@ export default {
     transform: scaleX(0);
     transition: transform 0.3s ease-in-out;
     transform-origin: center;
-}
-    
+}   
 .navbar-nav .nav-link:hover:after {
     transform: scaleX(1);
 }.logout-button {
@@ -134,7 +131,6 @@ export default {
   cursor: pointer;
   transition: color 0.3s ease-in-out;
 }
-
 .logout-button:hover {
   color: red;
 }

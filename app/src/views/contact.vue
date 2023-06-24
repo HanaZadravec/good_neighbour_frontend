@@ -9,13 +9,25 @@
           <div class="contact col-md-6">
             <p style="font-size:23px;">Phone: 555-333</p>
             <p style="font-size:23px;">E-mail: goodneighbur@gmail.com</p>
-            <p style="font-size:23px;">Adress: Ul. Petra Preradovica 9, Pula</p>
+            <p style="font-size:23px;">Address: Ul. Petra Preradovica 9, Pula</p>
+          </div>
+          <div class="contact col-md-6">
+          </div>
+          <div class="contact col-md-12">
+             <p style="color:red;font-size:20px;">
+             Don't hesitate to contact us with any information or concerns regarding a crime or other matter. Your safety and well-being
+              are our top priorities, and we are here to assist you. Don't hesitate to contact us. We are committed to maintaining 
+              confidentiality and treating all information with the utmost respect. Together, we can make a difference and create safer 
+              communities. Please use the contact details above to get in touch with our team.
+            </p>
+            <p style="color:red;font-size:20px;">We look forward to hearing from you!</p>
           </div>
         </div>
       </div>
-    <appFooter />
+    <appFooter/>
   </div>
 </template>
+
 
 <script>
 import appFooter from '@/components/footer.vue'

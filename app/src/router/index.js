@@ -10,7 +10,6 @@ import crimes from '@/views/crimes.vue';
 import profile from '@/views/myProfile.vue';
 import notifications from '@/views/notifications.vue';
 import admin from '@/views/admin.vue';
-import axios from 'axios';
 
 Vue.use(VueRouter);
 

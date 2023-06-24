@@ -14,25 +14,25 @@
           <p class="card-text">Is crime resolved: {{crime.resolved}} </p>
           <p class="card-text">Description: {{ crime.crimeDesc }}</p>
           <h6 class="card-subtitle mb-2 text-muted">Comments:</h6>
-          <transition-group name="fade" tag="ul">
-            <li v-for="comment in getCrimeComments(crime._id)" :key="comment._id">
+          <transition-group name="fade">
+            <div v-for="comment in getCrimeComments(crime._id)" :key="comment._id">
               <transition name="fade" mode="out-in">
                 <div v-if="!comment.deleted">
                   {{ comment.userEmail }} - {{ comment.commentText }}
-                  <transition-group name="fade" tag="ul">
-                    <li v-for="reply in comment.replies" :key="reply._id">
+                  <transition-group name="fade">
+                    <div v-for="reply in comment.replies" :key="reply._id" class="ml-2">
                       {{ reply.userEmail }} - {{ reply.replyText }}
-                      <button @click="deleteReply(comment._id, reply._id)">Delete Reply</button>
-                    </li>
+                      <button class="btn btn-round btn-danger m-1" @click="deleteReply(comment._id, reply._id)">Delete Reply</button>
+                    </div>
                   </transition-group>
-                  <button @click="deleteComment(comment._id)">Delete Comment</button>
+                  <button class="btn btn-round btn-danger" @click="deleteComment(comment._id)">Delete Comment</button>
                 </div>
               </transition>
-            </li>
+            </div>
           </transition-group>
           <p v-if="getCrimeComments(crime._id).length === 0">No comments</p>
-          <button @click="deleteCrime(crime._id)">Delete Crime</button>
-          <button v-if="crime.resolved === 'Not resolved'" @click="markCrimeAsResolved(crime._id)">Mark as Resolved</button>
+          <button class="btn btn-round btn-danger m-2" @click="deleteCrime(crime._id)">Delete Crime</button>
+          <button class="btn btn-round btn-danger btn-block" v-if="crime.resolved === 'Not resolved'" @click="markCrimeAsResolved(crime._id)">Mark as Resolved</button>
         </div>
       </div>
     </div>
@@ -142,6 +142,7 @@ export default {
   padding: 20px;
   margin-bottom: 20px;
   color: black;
+  font-family: 'Norwester', sans-serif;
 }
 
 .fade-enter-active,

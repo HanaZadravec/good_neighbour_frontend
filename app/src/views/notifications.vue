@@ -1,16 +1,24 @@
 <template>
   <div class="boja">
     <appNav />
-    <h1>Notifications</h1>
-    <ul>
-      <li v-for="notification in notifications" :key="notification._id" :class="{ 'read': notification.status === 'read' }">
-        <strong>{{ notification.title }}</strong>
-        <p>{{ notification.address }}</p>
-        <p> {{notification.description}}</p>
-        <button @click="markAsRead(notification)">Mark as Read</button>
-      </li>
-    </ul>
-    <appFooter />
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Notifications</h1>
+          <div style="color:white;font-size:30px;font-family: 'Norwester', sans-serif;margin-bottom:360px;" v-if="notifications.length === 0" class="no-notification">
+            No new notifications
+          </div>
+          <div class="card" v-for="notification in notifications" :key="notification._id" :class="{'read': notification.status === 'read', 'unread': notification.status === 'unread'}">
+            <div class="card-body">
+              <h5 class="card-title">{{ notification.title }}</h5>
+              <p class="card-text">{{ notification.description }}</p>
+              <button v-if="notification.status === 'unread'" class="btn btn-primary btn-danger" @click="markAsRead(notification)">Mark as Read</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <appFooter style="margin-top:230px;"/>
   </div>
 </template>
 
@@ -77,6 +85,12 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-size: 70px;
+  color: white;
+  margin-bottom: 30px;
+  font-family: 'Norwester', sans-serif;
+}
 .boja {
   background-size: cover;
   background-position: center;
@@ -84,7 +98,42 @@ export default {
   height: 100%;
 }
 
-li.read {
-  background-color: lightgray; /* Promijenite boju pozadine na pročitanim notifikacijama */
+.read {
+  background-color: lightgray; 
+}
+
+.unread {
+  border: 7px solid red;
+}
+
+.card {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>

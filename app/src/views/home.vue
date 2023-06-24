@@ -54,7 +54,6 @@
               <p class="card-text">Crime Level: {{crime.crimeLevel}}</p>
               <p class="card-text">Is crime resolved: {{crime.resolved}} </p>
               <p class="card-text">Description: {{ crime.crimeDesc }}</p>
-            
             </div>
           </div>
         </div>
@@ -172,10 +171,11 @@ h1 {
   background-color: black;
   height: 100%;
 }
-
 .alert {
   border-color: #b71c1c;
   color: black;
 }
-
+.card{
+  font-family: 'Norwester', sans-serif;
+}
 </style>
