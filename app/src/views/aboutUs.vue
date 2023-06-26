@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-md-6">
         <h1>About Us</h1>
-        <p class="lead">A community-based mobile app called Good Neighbourgh was created to bring neighbours together and support neighbourhood safety. Users of the app can notify their neighbours of any threats by reporting any suspicious activities or occurrences in their neighbourhood. Additionally, it offers real-time data on neighbourhood crime patterns and enables users to work together on local projects and plan neighborhood activities.</p>
+        <p class="lead">A community-based web app called Good Neighbourgh was created to bring neighbours together and support neighbourhood safety. Users of the app can notify their neighbours of any threats by reporting any suspicious activities or occurrences in their neighbourhood. Additionally, it offers real-time data on neighbourhood crime patterns and enables users to work together on local projects and plan neighborhood activities.</p>
         <p>Users may collaborate to build safer, more connected communities by utilizing Good Neighbourgh. The app is an effective tool for fostering a feeling of civic duty among neighbours and creating stronger communities. By using Good Neighbourgh, you can actively contribute to creating a better and safer neighbourhood.</p>
       </div>
       <div class="col-md-6">
